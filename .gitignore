@@ -1,8 +1,7 @@
 archive/*
-raw/*
 
-# build output
-dist/
+# build output: dist/html is tracked, dist/gemtext is not
+dist/gemtext/
 
 # wrangler / node
 .wrangler/
