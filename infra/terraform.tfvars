@@ -6,4 +6,4 @@ gcp_project_id = "surfaced-blog"
 domain         = "surfaced.run"
 
 admin_ssh_public_key  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJj/0nELsnnKHvvFcP4s/jeS0hTCzr13sll2WWP+nqS5 julian@Julians-MacBook-Air.local"
-deploy_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJj/0nELsnnKHvvFcP4s/jeS0hTCzr13sll2WWP+nqS5 julian@Julians-MacBook-Air.local"
+deploy_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJRYiDFa/iHXyXiMOHKbexy1X5Zs5+wPhwbPmwik82Iy julian@Julians-MacBook-Air.local"
