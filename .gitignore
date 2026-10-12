@@ -6,6 +6,7 @@ dist/gemtext/
 # wrangler / node
 .wrangler/
 node_modules/
+*secret*
 
 # terraform
 infra/.terraform/
