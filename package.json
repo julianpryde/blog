@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "Deploy tooling only. The build does not use Node.",
+  "devDependencies": {
+    "wrangler": "4.141.0"
+  }
+}

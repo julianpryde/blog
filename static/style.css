@@ -1,0 +1,75 @@
+/* Mirrors a plain Gemini client: one column, one line per link, nothing else. */
+
+:root {
+  color-scheme: light dark;
+  --fg: #1a1a1a;
+  --bg: #fdfdfd;
+  --muted: #666;
+  --link: #0645ad;
+  --rule: #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e6e6e6;
+    --bg: #141414;
+    --muted: #999;
+    --link: #8ab4f8;
+    --rule: #333;
+  }
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, sans-serif;
+  font-size: 100%;
+  line-height: 1.5;
+}
+
+body {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1, h2, h3 {
+  line-height: 1.25;
+  margin: 1.5em 0 0.5em;
+}
+
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.1rem; }
+
+p, ul, blockquote, pre {
+  margin: 0 0 0.75em;
+}
+
+a { color: var(--link); }
+
+/* Gemtext link lines: each on its own line with a "=>" marker. */
+p.link { margin: 0.25em 0; }
+p.link::before {
+  content: "\21D2\00A0";
+  color: var(--muted);
+}
+
+blockquote {
+  border-left: 3px solid var(--rule);
+  padding-left: 1em;
+  color: var(--muted);
+}
+
+pre {
+  overflow-x: auto;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+}
+
+footer {
+  margin-top: 3em;
+  padding-top: 1em;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}

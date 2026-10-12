@@ -1,0 +1,16 @@
+// Assets-only Worker: no script, no run_worker_first.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "surfaced",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist/html",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "routes": [
+    { "pattern": "surfaced.run", "custom_domain": true }
+  ],
+  "workers_dev": true,
+  "observability": { "enabled": false }
+}

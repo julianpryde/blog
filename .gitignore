@@ -1,3 +1,15 @@
 archive/*
-raw/*
-dist/gemtext/*
+
+# build output: dist/html is tracked, dist/gemtext is not
+dist/gemtext/
+
+# wrangler / node
+.wrangler/
+node_modules/
+
+# terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.auto.tfvars
+infra/crash.log

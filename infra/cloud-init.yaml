@@ -1,0 +1,115 @@
+#cloud-config
+# Rendered by Terraform templatefile(). Escape literal dollar-brace as $${...
+
+package_update: true
+package_upgrade: true
+packages:
+  - rsync
+  - unattended-upgrades
+  - apt-listchanges
+
+users:
+  - default
+  # Runs the server. No shell, no home, can only read /srv/gemini.
+  - name: agate
+    system: true
+    shell: /usr/sbin/nologin
+    no_create_home: true
+  # Receives deploys. The key can only run rrsync, write-only, into /srv/gemini.
+  - name: deploy
+    shell: /bin/sh
+    lock_passwd: true
+    ssh_authorized_keys:
+      - 'command="/usr/bin/rrsync -wo /srv/gemini",restrict ${deploy_ssh_public_key}'
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/10-hardening.conf
+    permissions: "0644"
+    content: |
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+      X11Forwarding no
+      AllowTcpForwarding no
+      AllowAgentForwarding no
+
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    permissions: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+
+  - path: /etc/systemd/system/agate.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Agate Gemini server
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      User=agate
+      Group=agate
+      ExecStart=/usr/local/bin/agate \
+        --content /srv/gemini \
+        --certs /var/lib/agate/certs \
+        --hostname ${gemini_host} \
+        --addr [::]:1965 \
+        --addr 0.0.0.0:1965 \
+        --lang en
+      Restart=on-failure
+
+      # Certificates live here and survive redeploys: visitors pin them (TOFU).
+      StateDirectory=agate
+      StateDirectoryMode=0700
+
+      NoNewPrivileges=yes
+      ProtectSystem=strict
+      ProtectHome=yes
+      PrivateTmp=yes
+      PrivateDevices=yes
+      ProtectKernelTunables=yes
+      ProtectKernelModules=yes
+      ProtectKernelLogs=yes
+      ProtectControlGroups=yes
+      ProtectClock=yes
+      ProtectHostname=yes
+      ProtectProc=invisible
+      RestrictNamespaces=yes
+      RestrictRealtime=yes
+      RestrictSUIDSGID=yes
+      LockPersonality=yes
+      MemoryDenyWriteExecute=yes
+      RestrictAddressFamilies=AF_INET AF_INET6
+      CapabilityBoundingSet=
+      SystemCallArchitectures=native
+      SystemCallFilter=@system-service
+      SystemCallFilter=~@privileged
+      ReadOnlyPaths=/srv/gemini
+      UMask=0077
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /srv/gemini/index.gmi
+    permissions: "0644"
+    content: |
+      # ${gemini_host}
+
+      Nothing deployed yet.
+
+runcmd:
+  - |
+    set -eu
+    cd /tmp
+    curl -fsSLo agate.gz "https://github.com/mbrubeck/agate/releases/download/${agate_version}/agate.x86_64-unknown-linux-gnu.gz"
+    echo "${agate_sha256}  agate.gz" | sha256sum -c -
+    gunzip -f agate.gz
+    install -o root -g root -m 0755 agate /usr/local/bin/agate
+    rm -f agate
+  - chown -R deploy:deploy /srv/gemini
+  - chmod 0755 /srv/gemini
+  - systemctl restart ssh
+  - systemctl daemon-reload
+  - systemctl enable --now agate
+  - systemctl enable --now unattended-upgrades
