@@ -1,0 +1,16 @@
+# About
+
+Surfaced is a blog about secure software development: finding vulnerabilities, fixing them, and building software that doesn't have them in the first place.
+
+This site is served over both HTTPS and Gemini. The two versions have the same content.
+
+=> https://surfaced.run/ surfaced.run over HTTPS
+=> gemini://gemini.surfaced.run/ gemini.surfaced.run over Gemini
+
+## Contact
+
+To report a security issue with this site, see the security policy.
+
+=> /.well-known/security.txt security.txt
+
+=> index.gmi Home

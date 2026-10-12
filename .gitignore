@@ -1,3 +1,16 @@
 archive/*
 raw/*
-dist/gemtext/*
+
+# build output
+dist/
+
+# wrangler / node
+.wrangler/
+node_modules/
+
+# terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.auto.tfvars
+infra/crash.log
