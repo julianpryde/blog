@@ -35,7 +35,7 @@ The build, deploy and syndication programs are not in this repo yet.
 
 1. Add `surfaced.run` as a zone and point the registrar at Cloudflare's nameservers.
 2. Create an API token with **Zone › DNS › Edit**, **Zone › Zone Settings › Edit** and **Account › Workers Scripts › Edit**, limited to this zone and account. Export it as `CLOUDFLARE_API_TOKEN`.
-3. Set up Email Routing for `security@surfaced.run` (referenced by `security.txt` and `SECURITY.md`).
+3. Set up email alias for `security@surfaced.run` referring to `julian@surfaced.run` (referenced by `security.txt` and `SECURITY.md`).
 
 ### GCP
 
