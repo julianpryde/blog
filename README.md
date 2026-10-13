@@ -42,7 +42,9 @@ The build, deploy and syndication programs are not in this repo yet.
    | Zone | DNS | Edit | Terraform `gemini` record, wrangler custom domain |
    | Zone | Zone Settings | Edit | Terraform HTTPS/TLS/HSTS settings |
    | Zone | Workers Routes | Edit | wrangler custom domain |
-   | Account | Workers | Edit | wrangler deploy |
+   | Account | Workers | Admin, then Editor | wrangler deploy |
+
+   Workers Editor can deploy to an existing Worker but can't create one, so the first `wrangler deploy` needs Workers Admin. Once the `surfaced` Worker exists, you can swap Admin for Editor. Workers permissions are account-scoped, so put them only in the account policy, not the zone policy.
 
    The account-level DNS groups (Account DNS Settings, DNS Firewall, DNS Views, Registrar) aren't needed, and neither are Workers Containers, KV or R2. Export the token as `CLOUDFLARE_API_TOKEN`, and set `CLOUDFLARE_ACCOUNT_ID` so wrangler doesn't need permission to list your accounts.
 3. Set up Email Routing for `security@surfaced.run` (referenced by `security.txt` and `SECURITY.md`).
