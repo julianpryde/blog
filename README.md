@@ -34,7 +34,17 @@ The build, deploy and syndication programs are not in this repo yet.
 ### Cloudflare
 
 1. Add `surfaced.run` as a zone and point the registrar at Cloudflare's nameservers.
-2. Create an API token with **Zone › DNS › Edit**, **Zone › Zone Settings › Edit** and **Account › Workers Scripts › Edit**, limited to this zone and account. Export it as `CLOUDFLARE_API_TOKEN`.
+2. Create a custom API token. Zone permissions should be limited to `surfaced.run`, and account permissions to your account:
+
+   | Scope | Permission | Level | Used by |
+   | --- | --- | --- | --- |
+   | Zone | Zone | Read | Terraform zone lookup, wrangler |
+   | Zone | DNS | Edit | Terraform `gemini` record, wrangler custom domain |
+   | Zone | Zone Settings | Edit | Terraform HTTPS/TLS/HSTS settings |
+   | Zone | Workers Routes | Edit | wrangler custom domain |
+   | Account | Workers | Edit | wrangler deploy |
+
+   The account-level DNS groups (Account DNS Settings, DNS Firewall, DNS Views, Registrar) aren't needed, and neither are Workers Containers, KV or R2. Export the token as `CLOUDFLARE_API_TOKEN`, and set `CLOUDFLARE_ACCOUNT_ID` so wrangler doesn't need permission to list your accounts.
 3. Set up Email Routing for `security@surfaced.run` (referenced by `security.txt` and `SECURITY.md`).
 
 ### GCP
