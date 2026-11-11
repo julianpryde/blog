@@ -3,6 +3,8 @@
 ;
 ; configuration
 ;
+
+; may be deprecated
 (define line-separator "LF")
   
 ; contents of the $BLOG_CONTENT environment variable
@@ -49,17 +51,17 @@
       (cond
         ; heading 1
         ((string-prefix? normalized-line heading-1-prefix)
-         (writeln (add-html-bookends line heading-1-prefix "<h1>" "</h1>"))
+         (writeln (add-html-bookends normalized-line "<h1>" "</h1>"))
          (loop "none"))
         
         ; heading 2
         ((string-prefix? normalized-line heading-2-prefix)
-         (writeln (add-html-bookends line heading-2-prefix "<h2>" "</h2>"))
+         (writeln (add-html-bookends normalized-line "<h2>" "</h2>"))
          (loop "none"))
         
          ; heading 3
          ((string-prefix? normalized-line heading-3-prefix)
-          (writeln (add-html-bookends line heading-3-prefix "<h3>" "</h3>"))
+          (writeln (add-html-bookends normalized-line "<h3>" "</h3>"))
           (loop "none"))
 
           ; list item
@@ -68,20 +70,37 @@
              ; if beginning of a list: prepend list item with 
              ((string=? state "none")
               (writeln "<ul>")
-              (writeln (add-html-bookends list-item-prefix "<li>" "</li>"))
+              (writeln (add-html-bookends normalized-line "<li>" "</li>"))
               (loop "list"))
              ; if in a list
              ((string=? state "list")
-              (writeln (add-html-bookends list-item-prefix "<li>" "</li>"))
+              (writeln (add-html-bookends normalized-line "<li>" "</li>"))
               (loop "list"))
              ; else throw an error
              (else (raise-user-error (string append "invalid state: " state)))))
 
-          ))))
+          ; block quote
+          ((string-prefix? normalized-line block-quote-prefix)
+           (writeln (add-html-bookends normalized-line
+                                       "<blockquote>"
+                                       "</blockquote>"))
+           (loop "none"))
+
+          ; link
+          ((string-prefix? normalized-line link-prefix)
+           (let ((line-list (string-split normalized-line)))
+                  (writeln
+                   (add-html-bookends
+                    (string-join (list (car line-list) (cddr line-list))
+                                 (string-append
+                                  (string-append "<a href=\""
+                                                 (cdar line-list))
+                                  ">")))))))))
 
 ;
 ; state checkers
 ;
+                                         
 (define (block-end-check state normalized-line)
   (cond
     ((string=? state "list") (check-if-list-end normalized-line))
@@ -120,12 +139,15 @@
     ((string=? "beginning" (test-procedure state-flag line))
      (string-append ))))
 
-; format headings in html
-(define (add-html-bookends line prefix opening-tag closing-tag)
-  (string-replace
-   (string-append line closing-tag)
-   prefix
-   opening-tag))
+; format html blocks
+(define (add-html-bookends line opening-tag closing-tag)
+  (let line-list ((string-split line))
+    (string-append opening-tag
+                   (string-append (string-join (cdr line-list))
+                                  closing-tag))))
+
+(define (build-link-opening-tag link-text)
+  (string-append "<a href=\"" link-text))
 
 ; may be deprecated
 (define (linesep-mode line-separator)
