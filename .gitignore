@@ -14,3 +14,6 @@ infra/*.tfstate
 infra/*.tfstate.*
 infra/*.auto.tfvars
 infra/crash.log
+
+# cached files
+*~
